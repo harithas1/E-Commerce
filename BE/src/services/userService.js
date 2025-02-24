@@ -25,7 +25,7 @@ const registerUser = async ({ name, email, password, role }) => {
   });
 
   // Send verification email
-  const verificationLink = `http://localhost:3000/api/auth/verify-email?token=${emailVerificationToken}`;
+  const verificationLink = `https://hari-e-commerce.netlify.app/api/auth/verify-email?token=${emailVerificationToken}`;
   const emailContent = `
     <h2>Verify Your Email</h2>
     <p>Click the link below to verify your email:</p>
@@ -110,8 +110,6 @@ const createOrder = async ({ userId, productId, quantity }) => {
   return order;
 };
 
-
-
 // get all products
 const getAllProducts = async () => {
   const products = await prisma.product.findMany();
@@ -124,5 +122,5 @@ module.exports = {
   loginUser,
   createReview,
   createOrder,
-  getAllProducts
+  getAllProducts,
 };
