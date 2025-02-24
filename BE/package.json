@@ -1,15 +1,17 @@
 {
   "name": "prisma-day-17",
   "version": "1.0.0",
-  "main": "index.js",
+  "description": "E-Commerce Backend using Prisma and Express",
+  "main": "server.js",
+  "type": "commonjs",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "node server.js",
+    "start": "node server.js",
+    "build": "npm install && npx prisma generate"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
-  "description": "",
   "dependencies": {
     "@prisma/client": "^6.3.0",
     "bcryptjs": "^3.0.2",
@@ -20,5 +22,8 @@
     "jsonwebtoken": "^9.0.2",
     "nodemailer": "^6.10.0",
     "prisma": "^6.3.0"
+  },
+  "prisma": {
+    "schema": "prisma/schema.prisma"
   }
 }
