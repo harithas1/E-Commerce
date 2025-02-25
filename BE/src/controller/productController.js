@@ -114,4 +114,27 @@ const get_product_by_id = async (req, res) => {
   }
 };
 
-module.exports = { add_product, update_product, delete_product, list_products, add_category, get_all_categories, get_product_by_id };
+
+const getAllProductsController = async (req, res) => {
+  const { page = 1, pageSize = 10 } = req.query; // Extract page and pageSize from query params
+
+  try {
+    const products = await getAllProducts(parseInt(page), parseInt(pageSize));
+    res.json(products);
+  } catch (error) {
+    console.error("Error in getAllProductsController:", error);
+    res.status(500).json({ error: "Failed to fetch products" });
+  }
+};
+
+
+module.exports = {
+  add_product,
+  update_product,
+  delete_product,
+  list_products,
+  add_category,
+  get_all_categories,
+  get_product_by_id,
+  getAllProductsController,
+};

@@ -111,7 +111,7 @@ const createOrder = async ({ userId, productId, quantity }) => {
 };
 
 
-// `https://e-commerce-ecuo.onrender.com/api/products?limit=${defaultLimit}&skip=${offset}`;
+
 
 // get all products
 const getAllProducts = async ({

@@ -6,7 +6,8 @@ const {
   list_products,
   add_category,
   get_all_categories,
-  get_product_by_id
+  get_product_by_id,
+  getAllProductsController,
 } = require("../controller/productController");
 
 const router = express.Router();
@@ -31,6 +32,10 @@ router.get("/category-list", get_all_categories);
 
 // Get a product by ID
 router.get("/:id", get_product_by_id);
+
+
+router.get("/", getAllProductsController);
+
 
 
 module.exports = router;

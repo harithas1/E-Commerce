@@ -130,6 +130,33 @@ const getProductById = async (productId) => {
 
 
 
+// getallproducts
+// Service to fetch all products
+const getAllProducts = async (page, pageSize = 10) => {
+  try {
+    const products = await prisma.product.findMany({
+      skip: (page - 1) * pageSize,  // Pagination logic
+      take: pageSize,
+      include: {
+        category: true,  // Include category information if needed
+        reviews: true,   // Optionally include reviews
+      },
+    });
+
+    // Get total count for pagination
+    const totalProducts = await prisma.product.count();
+
+    return {
+      data: products,
+      totalPages: Math.ceil(totalProducts / pageSize),  // Calculate total pages based on the total count
+    };
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    throw new Error("Failed to fetch products");
+  }
+};
+
+
 module.exports = {
   addProduct,
   updateProduct,
@@ -137,5 +164,6 @@ module.exports = {
   listProductsBySeller,
   addCategory,
   getAllCategories,
-  getProductById
+  getProductById,
+  getAllProducts
 };
