@@ -30,7 +30,7 @@ router.post("/add-category", add_category);
 router.get("/category-list", get_all_categories);
 
 // Get a product by ID
-router.get("/product/:id", get_product_by_id);
+router.get("/:id", get_product_by_id);
 
 
 module.exports = router;
