@@ -110,11 +110,40 @@ const createOrder = async ({ userId, productId, quantity }) => {
   return order;
 };
 
+
+// `https://e-commerce-ecuo.onrender.com/api/products?limit=${defaultLimit}&skip=${offset}`;
+
 // get all products
-const getAllProducts = async () => {
-  const products = await prisma.product.findMany();
-  return products;
+const getAllProducts = async ({
+  limit = 10,
+  skip = 0,
+  search = "",
+  categoryId = null,
+}) => {
+  const filters = {};
+
+  if (search) {
+    filters.OR = [
+      { title: { contains: search, mode: "insensitive" } },
+      { description: { contains: search, mode: "insensitive" } },
+    ];
+  }
+
+  if (categoryId && categoryId !== "all") {
+    filters.categoryId = categoryId;
+  }
+
+  const products = await prisma.product.findMany({
+    where: filters,
+    take: parseInt(limit),
+    skip: parseInt(skip),
+  });
+
+  const total = await prisma.product.count({ where: filters });
+
+  return { products, total };
 };
+
 
 module.exports = {
   registerUser,

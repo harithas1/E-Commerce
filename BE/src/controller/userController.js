@@ -58,10 +58,11 @@ const create_order = async (req, res) => {
 // get all products
 const get_all_products = async (req, res) => {
   try {
-    const products = await getAllProducts();
-    res.status(200).json(products);
+    const { limit, skip, search, categoryId } = req.query;
+    const result = await getAllProducts({ limit, skip, search, categoryId });
+    res.json(result);
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    res.status(500).json({ error: "Failed to fetch products" });
   }
 };
 
