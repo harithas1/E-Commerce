@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const userRoutes = require("./routes/userRoutes");
 const productRoutes = require("./routes/productRoutes");
+const cartRoutes = require("./routes/cartRoutes");
 
 const app = express();
 
@@ -14,6 +15,10 @@ app.use("/api/auth", userRoutes);
 
 // Add product routes
 app.use("/api/products", productRoutes);
+
+// cart routes
+app.use("/api/cart", cartRoutes);
+
 
 app.get("/test", (req, res) => {
   res.send("Test route works!");
