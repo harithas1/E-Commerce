@@ -113,11 +113,29 @@ const getAllCategories = async () => {
   return categories;
 };
 
+
+
+//  return fetch(`https://e-commerce-ecuo.onrender.com/products/${productId}`)
+//    .then((res) => res.json())
+//    .then((product) => ({
+//      ...product,
+//     
+
+const getProductById = async (productId) => {
+  const product = await prisma.product.findUnique({
+    where: { id: productId },
+  });
+  return product;
+};
+
+
+
 module.exports = {
   addProduct,
   updateProduct,
   deleteProduct,
   listProductsBySeller,
   addCategory,
-  getAllCategories
+  getAllCategories,
+  getProductById
 };

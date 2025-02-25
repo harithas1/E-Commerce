@@ -93,7 +93,7 @@ const add_category = async (req, res) => {
 };
 
 // Controller for getting all categories
-const getAllCategories = async (req, res) => {
+const get_all_categories = async (req, res) => {
   try {
     const categories = await productService.getAllCategories();
     return res.status(200).json(categories);
@@ -103,4 +103,15 @@ const getAllCategories = async (req, res) => {
   }
 };
 
-module.exports = { add_product, update_product, delete_product, list_products, add_category, getAllCategories };
+const get_product_by_id = async (req, res) => {
+  try {
+    const { productId } = req.params;
+    const product = await productService.getProductById(productId);
+    return res.status(200).json(product);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: "Something went wrong!" });
+  }
+};
+
+module.exports = { add_product, update_product, delete_product, list_products, add_category, get_all_categories, get_product_by_id };
