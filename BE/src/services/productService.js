@@ -133,19 +133,22 @@ const getAllCategories = async () => {
 
 
 
-//  return fetch(`https://e-commerce-ecuo.onrender.com/products/${productId}`)
-//    .then((res) => res.json())
-//    .then((product) => ({
-//      ...product,
-//     
+//  return fetch(`https://e-commerce-ecuo.onrender.com/api/products/${productId}`)
+
+   
 
 const getProductById = async (productId) => {
   console.log("Fetching product by ID...");
-  
-  const product = await prisma.product.findUnique({
-    where: { id: productId },
-  });
-  return product;
+   const product = await prisma.product.findUnique({
+     where: { id: productId },
+     include: {
+       category: true, // Include category information if needed
+       reviews: true, // Optionally include reviews
+      
+     },
+   });
+
+   return product;
 };
 
 

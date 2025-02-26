@@ -76,7 +76,6 @@ const list_products = async (req, res) => {
   }
 };
 
-
 // Controller for adding a category
 const add_category = async (req, res) => {
   try {
@@ -106,6 +105,10 @@ const get_all_categories = async (req, res) => {
 const get_product_by_id = async (req, res) => {
   try {
     const { productId } = req.params;
+    if (!productId) {
+      return res.status(400).json({ error: "Product ID is required" });
+    } 
+
     const product = await productService.getProductById(productId);
     return res.status(200).json(product);
   } catch (error) {
@@ -114,12 +117,14 @@ const get_product_by_id = async (req, res) => {
   }
 };
 
-
 const getAllProductsController = async (req, res) => {
   const { page = 1, pageSize = 10 } = req.query; // Extract page and pageSize from query params
 
   try {
-    const products = await productService.getAllProducts(parseInt(page), parseInt(pageSize));
+    const products = await productService.getAllProducts(
+      parseInt(page),
+      parseInt(pageSize)
+    );
     res.json(products);
   } catch (error) {
     console.error("Error in getAllProductsController:", error);
@@ -127,19 +132,17 @@ const getAllProductsController = async (req, res) => {
   }
 };
 
-
-const get_Home_Page_Products =async (req, res) => {
+const get_Home_Page_Products = async (req, res) => {
   try {
     const limit = parseInt(req.query.limit) || 10; // Default limit is 10
     const products = await productService.getHomePageProducts(limit);
-    
+
     res.status(200).json(products);
   } catch (error) {
     console.error("Error fetching home page products:", error);
     res.status(500).json({ error: "Failed to fetch home page products" });
   }
 };
-
 
 const get_Filtered_Products = async (req, res) => {
   try {
@@ -172,7 +175,6 @@ const get_Filtered_Products = async (req, res) => {
   }
 };
 
-
 module.exports = {
   add_product,
   update_product,
@@ -183,5 +185,5 @@ module.exports = {
   get_product_by_id,
   getAllProductsController,
   get_Home_Page_Products,
-  get_Filtered_Products
+  get_Filtered_Products,
 };
