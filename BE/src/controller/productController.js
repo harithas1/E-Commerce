@@ -108,7 +108,7 @@ const product_by_id = async (req, res) => {
     if (!productId) {
       return res.status(400).json({ error: "Product ID is required" });
     }
-    const product = await productService.productById(productId);
+    const product = await productService.productById(parseInt(productId));
     return res.status(200).json(product);
   } catch (error) {
     console.error(error);
@@ -133,7 +133,6 @@ const getAllProductsController = async (req, res) => {
 
 const get_Home_Page_Products = async (req, res) => {
   console.log("Fetching home page products...");
-
   try {
     const limit = parseInt(req.query.limit) || 10; // Default limit is 10
     const products = await productService.getHomePageProducts(limit);

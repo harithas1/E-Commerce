@@ -40,7 +40,7 @@ router.get("/:productId", product_by_id);
 
 
 // get_Home_Page_Products
-router.get("/homepageproducts", get_Home_Page_Products);
+router.get("/home", get_Home_Page_Products);
 
 
 // get_Filtered_Products
