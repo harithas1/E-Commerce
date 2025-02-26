@@ -6,7 +6,7 @@ const {
   list_products,
   add_category,
   get_all_categories,
-  get_product_by_id,
+  product_by_id,
   // getAllProductsController,
   get_Home_Page_Products,
   get_Filtered_Products
@@ -33,7 +33,7 @@ router.post("/add-category", add_category);
 router.get("/category-list", get_all_categories);
 
 // Get a product by ID
-router.get("/:id", get_product_by_id);
+router.get("/:productId", product_by_id);
 
 
 // router.get("/", getAllProductsController);

@@ -137,7 +137,7 @@ const getAllCategories = async () => {
 
    
 
-const getProductById = async (productId) => {
+const productById = async (productId) => {
   console.log("Fetching product by ID...");
    const product = await prisma.product.findUnique({
      where: { id: productId },
@@ -288,7 +288,7 @@ module.exports = {
   listProductsBySeller,
   addCategory,
   getAllCategories,
-  getProductById,
+  productById,
   getAllProducts,
   getHomePageProducts,
   filterProducts
