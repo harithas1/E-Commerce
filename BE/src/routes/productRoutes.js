@@ -7,7 +7,7 @@ const {
   add_category,
   get_all_categories,
   get_product_by_id,
-  getAllProductsController,
+  // getAllProductsController,
   get_Home_Page_Products,
   get_Filtered_Products
 } = require("../controller/productController");
@@ -36,11 +36,11 @@ router.get("/category-list", get_all_categories);
 router.get("/:id", get_product_by_id);
 
 
-router.get("/", getAllProductsController);
+// router.get("/", getAllProductsController);
 
 
 // get_Home_Page_Products
-router.get("/homepage-products", get_Home_Page_Products);
+router.get("/homepageproducts", get_Home_Page_Products);
 
 
 // get_Filtered_Products

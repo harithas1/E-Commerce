@@ -133,6 +133,8 @@ const getAllProductsController = async (req, res) => {
 };
 
 const get_Home_Page_Products = async (req, res) => {
+  console.log("Fetching home page products...");
+  
   try {
     const limit = parseInt(req.query.limit) || 10; // Default limit is 10
     const products = await productService.getHomePageProducts(limit);
