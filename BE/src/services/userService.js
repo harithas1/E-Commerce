@@ -74,7 +74,7 @@ const loginUser = async ({ email, password }) => {
     expiresIn: "7d",
   });
 
-  return { message: "Login successful", token };
+  return { message: "Login successful", token, user };
 };
 
 
