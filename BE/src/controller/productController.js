@@ -1,4 +1,15 @@
-const productService = require("../services/productService");
+const {
+  addProduct,
+  updateProduct,
+  deleteProduct,
+  listProductsBySeller,
+  addCategory,
+  getAllCategories,
+  productById,
+  getAllProducts,
+  getHomePageProducts,
+  filterProducts,
+} = require("../services/productService");
 
 // Controller for adding a product
 const add_product = async (req, res) => {
@@ -7,7 +18,7 @@ const add_product = async (req, res) => {
       req.body;
 
     // Call productService to handle the database logic
-    const newProduct = await productService.addProduct({
+    const newProduct = await addProduct({
       sellerId,
       title,
       description,
@@ -30,7 +41,7 @@ const update_product = async (req, res) => {
     const { productId, title, description, price, stock, image } = req.body;
 
     // Calling productService to update the product
-    const updatedProduct = await productService.updateProduct({
+    const updatedProduct = await updateProduct({
       productId,
       title,
       description,
@@ -52,7 +63,7 @@ const delete_product = async (req, res) => {
     const { productId } = req.body;
 
     // Call productService to delete the product
-    await productService.deleteProduct(productId);
+    await deleteProduct(productId);
 
     return res.status(200).json({ message: "Product deleted successfully" });
   } catch (error) {
@@ -67,7 +78,7 @@ const list_products = async (req, res) => {
     const { sellerId } = req.query;
 
     // Call productService to list products for a seller
-    const products = await productService.listProductsBySeller(sellerId);
+    const products = await listProductsBySeller(sellerId);
 
     return res.status(200).json(products);
   } catch (error) {
@@ -82,7 +93,7 @@ const add_category = async (req, res) => {
     const { name } = req.body;
 
     // Call productService to add a category
-    const newCategory = await productService.addCategory(name);
+    const newCategory = await addCategory(name);
 
     return res.status(201).json(newCategory); // Return the newly created category
   } catch (error) {
@@ -94,7 +105,7 @@ const add_category = async (req, res) => {
 // Controller for getting all categories
 const get_all_categories = async (req, res) => {
   try {
-    const categories = await productService.getAllCategories();
+    const categories = await getAllCategories();
     return res.status(200).json(categories);
   } catch (error) {
     console.error(error);
@@ -108,7 +119,7 @@ const product_by_id = async (req, res) => {
     if (!productId) {
       return res.status(400).json({ error: "Product ID is required" });
     }
-    const product = await productService.productById(parseInt(productId));
+    const product = await productById(parseInt(productId));
     return res.status(200).json(product);
   } catch (error) {
     console.error(error);
@@ -120,7 +131,7 @@ const getAllProductsController = async (req, res) => {
   const { page = 1, pageSize = 10 } = req.query; // Extract page and pageSize from query params
 
   try {
-    const products = await productService.getAllProducts(
+    const products = await getAllProducts(
       parseInt(page),
       parseInt(pageSize)
     );
@@ -135,7 +146,7 @@ const get_Home_Page_Products = async (req, res) => {
   console.log("Fetching home page products...");
   try {
     const limit = parseInt(req.query.limit) || 10; // Default limit is 10
-    const products = await productService.getHomePageProducts(limit);
+    const products = await getHomePageProducts(limit);
 
     res.status(200).json(products);
   } catch (error) {
@@ -143,6 +154,8 @@ const get_Home_Page_Products = async (req, res) => {
     res.status(500).json({ error: "Failed to fetch home page products" });
   }
 };
+
+
 
 const get_Filtered_Products = async (req, res) => {
   try {
@@ -159,7 +172,7 @@ const get_Filtered_Products = async (req, res) => {
     const parsedPage = parseInt(page, 10);
     const parsedPageSize = parseInt(pageSize, 10);
 
-    const products = await productService.filterProducts({
+    const products = await filterProducts({
       categoryId,
       minPrice: minPrice ? parseFloat(minPrice) : undefined,
       maxPrice: maxPrice ? parseFloat(maxPrice) : undefined,

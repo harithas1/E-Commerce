@@ -5,9 +5,12 @@ const sendEmail = require("../utils/mailer");
 
 const JWT_SECRET = "subbu7hari27usha01gowthu01hema29"; // Move this to .env in production
 
+
+
 // Register User
 const registerUser = async ({ name, email, password, role }) => {
   // Check if email is already in use
+  email = email.toLowerCase();
   const existingUser = await prisma.user.findUnique({ where: { email } });
   if (existingUser) throw new Error("Email already exists!");
 
@@ -55,6 +58,8 @@ const verifyEmail = async (token) => {
   }
 };
 
+// ------------------------------------------------------------
+
 // Login User
 const loginUser = async ({ email, password }) => {
   const user = await prisma.user.findUnique({ where: { email } });
@@ -72,43 +77,70 @@ const loginUser = async ({ email, password }) => {
   return { message: "Login successful", token };
 };
 
+
+
+// -------------------------------------------------------------
+
+
 // Create Review
 const createReview = async ({ userId, productId, rating, comment }) => {
   // Create a review for a product
+  const user = await prisma.user.findUnique({ where: { id: userId } });
+  if (!user) throw new Error("User not found");
   const review = await prisma.review.create({
     data: {
       userId,
       productId,
       rating,
       comment,
-      reviewerName: "User Name", // Should fetch from user info
-      reviewerEmail: "user@example.com", // Should fetch from user info
+      reviewerName: user.name, // Should fetch from user info
+      reviewerEmail: user.email, // Should fetch from user info
     },
   });
   return review;
 };
 
+
+// -------------------------------------------------------------
+
 // Create Order
 const createOrder = async ({ userId, productId, quantity }) => {
-  const product = await prisma.product.findUnique({
-    where: { id: productId },
+  return await prisma.$transaction(async (prisma) => {
+    // Fetch product details
+    const product = await prisma.product.findUnique({
+      where: { id: productId },
+    });
+
+    if (!product) throw new Error("Product not found");
+
+    // Check if enough stock is available
+    if (product.stock < quantity) {
+      throw new Error("Not enough stock available");
+    }
+
+    const totalAmount = product.price * quantity;
+
+    // Create the order
+    const order = await prisma.order.create({
+      data: {
+        userId,
+        productId,
+        quantity,
+        totalAmount,
+        status: "PENDING", // Ensure enum value is correct in your schema
+      },
+    });
+
+    // Reduce stock quantity
+    await prisma.product.update({
+      where: { id: productId },
+      data: { stock: product.stock - quantity },
+    });
+
+    return order;
   });
-  if (!product) throw new Error("Product not found");
-
-  const totalAmount = product.price * quantity;
-
-  const order = await prisma.order.create({
-    data: {
-      userId,
-      productId,
-      quantity,
-      totalAmount,
-      status: "PENDING",
-    },
-  });
-
-  return order;
 };
+
 
 
 
@@ -130,7 +162,7 @@ const getAllProducts = async ({
   }
 
   if (categoryId && categoryId !== "all") {
-    filters.categoryId = categoryId;
+    filters.categoryId = parseInt(categoryId);
   }
 
   const products = await prisma.product.findMany({
@@ -145,6 +177,51 @@ const getAllProducts = async ({
 };
 
 
+// ------------------------------------------------------------
+
+
+
+
+const getHomePageProducts = async (limit = 10) => {
+  console.log("Fetching home page products...");
+
+  try {
+    const [bestSellers, newestArrivals] = await Promise.all([
+      // Fetch best-selling products (most ordered)
+      prisma.product.findMany({
+        take: limit,
+        orderBy: {
+          orders: { _count: "desc" }, // Corrected syntax for ordering by number of orders
+        },
+        include: {
+          category: true,
+          reviews: true,
+          orders: true, // Include orders to count them
+        },
+      }),
+
+      // Fetch newest arrivals (sorted by createdAt)
+      prisma.product.findMany({
+        take: limit,
+        orderBy: {
+          createdAt: "desc", // Sort by newest first
+        },
+        include: {
+          category: true,
+          reviews: true,
+        },
+      }),
+    ]);
+
+    return { bestSellers, newestArrivals };
+  } catch (error) {
+    console.error("Error fetching home page products:", error);
+    throw new Error("Failed to fetch home page products");
+  }
+};
+
+
+
 module.exports = {
   registerUser,
   verifyEmail,
@@ -152,4 +229,5 @@ module.exports = {
   createReview,
   createOrder,
   getAllProducts,
+  getHomePageProducts,
 };

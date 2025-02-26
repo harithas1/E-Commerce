@@ -4,7 +4,8 @@ const {
   loginUser,
   createReview,
   createOrder,
-  getAllProducts
+  getAllProducts,
+  getHomePageProducts
 } = require("../services/userService");
 
 const register_user = async (req, res) => {
@@ -66,11 +67,30 @@ const get_all_products = async (req, res) => {
   }
 };
 
+
+
+
+// get home page products
+
+const get_Home_Page_Products = async (req, res) => {
+  console.log("Fetching home page products...");
+  try {
+    const limit = parseInt(req.query.limit) || 10; // Default limit is 10
+    const products = await getHomePageProducts(limit);
+
+    res.status(200).json(products);
+  } catch (error) {
+    console.error("Error fetching home page products:", error);
+    res.status(500).json({ error: "Failed to fetch home page products" });
+  }
+};
+
 module.exports = {
   register_user,
   verify_email,
   login_user,
   add_review,
   create_order,
-  get_all_products
+  get_all_products,
+  get_Home_Page_Products,
 };

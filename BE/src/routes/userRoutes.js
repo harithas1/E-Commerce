@@ -5,7 +5,8 @@ const {
   login_user,
   add_review,
   create_order,
-  get_all_products
+  get_all_products,
+  get_Home_Page_Products,
 } = require("../controller/userController");
 
 const router = express.Router();
@@ -21,5 +22,9 @@ router.post("/orders", create_order); // Create an order
 
 // Product Routes
 router.get("/products", get_all_products);
+
+
+// get home product
+router.get("/homeproducts", get_Home_Page_Products);
 
 module.exports = router;
