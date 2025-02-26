@@ -8,6 +8,8 @@ const {
   get_all_categories,
   get_product_by_id,
   getAllProductsController,
+  get_Home_Page_Products,
+  get_Filtered_Products
 } = require("../controller/productController");
 
 const router = express.Router();
@@ -37,5 +39,11 @@ router.get("/:id", get_product_by_id);
 router.get("/", getAllProductsController);
 
 
+// get_Home_Page_Products
+router.get("/homepage-products", get_Home_Page_Products);
+
+
+// get_Filtered_Products
+router.get("/filter", get_Filtered_Products);
 
 module.exports = router;

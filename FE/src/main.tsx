@@ -7,8 +7,8 @@ import {
   redirect,
   RouterProvider,
 } from "react-router-dom";
-import Login from "./pages/login.tsx";
-import Register from "./pages/register.tsx"; // Import Register page
+import Login from "./pages/login.jsx";
+import Register from "./pages/register.jsx"; // Import Register page
 import Layout from "./components/ui/layout.tsx";
 import { DashboardSkeleton } from "./pages/dashboard.tsx";
 import { Provider } from "react-redux";
@@ -23,7 +23,7 @@ const Dashboard = lazy(() =>
   import("./pages/dashboard").then((module) => ({ default: module.default }))
 );
 const Cart = lazy(() => import("./pages/cart.tsx"));
-const ProductInfo = lazy(() => import("./pages/product.tsx"));
+const ProductInfo = lazy(() => import("./pages/product.jsx"));
 
 const router = createBrowserRouter([
   {
@@ -84,7 +84,7 @@ const router = createBrowserRouter([
           </Suspense>
         ),
         async loader({ request, params }: LoaderFunctionArgs) {
-          const { loader } = await import("./pages/product.tsx");
+          const { loader } = await import("./pages/product.jsx");
           return loader({ request, params }); // Pass the request and params
         },
       },

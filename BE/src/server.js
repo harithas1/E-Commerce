@@ -9,6 +9,7 @@ const app = require("./app");
 // app.use(express.json());
 app.use("/api/auth", userRoutes); // Authentication routes
 
+
 app.listen(3000, () => {
-  console.log("Server running on https://hari-e-commerce.netlify.app");
+  console.log("Server running on http://localhost:3000");
 });

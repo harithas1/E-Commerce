@@ -7,24 +7,23 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "../components/ui/card";
+} from "@/components/ui/card";
 import {
   HoverCard,
   HoverCardContent,
   HoverCardTrigger,
-} from "../components/ui/hover-card";
-import Rating from "../components/ui/rating";
-import Reviews from "../components/ui/reviews";
-import { Separator } from "../components/ui/separator";
-import { addToCart } from "../features/cartSlice";
+} from "@/components/ui/hover-card";
+import Rating from "@/components/ui/rating";
+import Reviews from "@/components/ui/reviews";
+import { Separator } from "@/components/ui/separator";
+import { addToCart } from "@/features/cartSlice";
 import { convertToRupee, formatPercentage, formatPrice } from "@/lib/utils";
-import { Product } from "@/types";
 import { ChevronDown, ShoppingCart } from "lucide-react";
 import { useDispatch } from "react-redux";
-import { LoaderFunctionArgs, useLoaderData } from "react-router-dom";
+import { useLoaderData } from "react-router-dom";
 
 // Loader function to fetch product data
-export function loader({ params }: LoaderFunctionArgs<{ productId: string }>) {
+export function loader({ params }) {
   const { productId } = params;
 
   return fetch(`https://e-commerce-ecuo.onrender.com/products/${productId}`)
@@ -40,14 +39,14 @@ export function loader({ params }: LoaderFunctionArgs<{ productId: string }>) {
 }
 
 // Get initials for avatar
-function getInitials(name: string) {
+function getInitials(name) {
   const [firstName, lastName] = name.split(" ");
-  return firstName.charAt(0) + lastName.charAt(0);
+  return firstName.charAt(0) + (lastName ? lastName.charAt(0) : "");
 }
 
 // Main ProductInfo Component
 export default function ProductInfo() {
-  const product = useLoaderData() as Product;
+  const product = useLoaderData();
 
   if (!product) {
     return <p>Product not found or error fetching data</p>; // Handle error if product not found
@@ -58,8 +57,13 @@ export default function ProductInfo() {
     title,
     description,
     price,
+    brand,
+    warrantyInformation,
     reviews,
+    dimensions,
+    shippingInformation,
     discountPercentage,
+    returnPolicy,
     rating,
   } = product;
 
@@ -126,7 +130,19 @@ export default function ProductInfo() {
 
               {/* Product Information */}
               <section className="grid grid-cols-2 gap-4">
-                
+                <article className="flex flex-col gap-2">
+                  <h1 className="text-lg">Brand - {brand}</h1>
+                  <h2 className="text-lg font-semibold">Dimensions</h2>
+                  <p className="text-sm font-medium">
+                    {dimensions.height} x {dimensions.width} x{" "}
+                    {dimensions.depth}
+                  </p>
+                </article>
+                <article className="flex flex-col gap-2 font-semibold">
+                  <h1>{warrantyInformation}</h1>
+                  <h2>{shippingInformation}</h2>
+                  <h2>{returnPolicy}</h2>
+                </article>
 
                 {/* Add to Cart Button */}
                 <Button

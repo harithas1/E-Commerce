@@ -119,11 +119,56 @@ const getAllProductsController = async (req, res) => {
   const { page = 1, pageSize = 10 } = req.query; // Extract page and pageSize from query params
 
   try {
-    const products = await getAllProducts(parseInt(page), parseInt(pageSize));
+    const products = await productService.getAllProducts(parseInt(page), parseInt(pageSize));
     res.json(products);
   } catch (error) {
     console.error("Error in getAllProductsController:", error);
     res.status(500).json({ error: "Failed to fetch products" });
+  }
+};
+
+
+const get_Home_Page_Products =async (req, res) => {
+  try {
+    const limit = parseInt(req.query.limit) || 10; // Default limit is 10
+    const products = await productService.getHomePageProducts(limit);
+    
+    res.status(200).json(products);
+  } catch (error) {
+    console.error("Error fetching home page products:", error);
+    res.status(500).json({ error: "Failed to fetch home page products" });
+  }
+};
+
+
+const get_Filtered_Products = async (req, res) => {
+  try {
+    const {
+      categoryId,
+      minPrice,
+      maxPrice,
+      sortBy = "price",
+      order = "asc",
+      page = 1,
+      pageSize = 10,
+    } = req.query;
+
+    const parsedPage = parseInt(page, 10);
+    const parsedPageSize = parseInt(pageSize, 10);
+
+    const products = await productService.filterProducts({
+      categoryId,
+      minPrice: minPrice ? parseFloat(minPrice) : undefined,
+      maxPrice: maxPrice ? parseFloat(maxPrice) : undefined,
+      sortBy,
+      order: order.toLowerCase() === "desc" ? "desc" : "asc", // Ensure valid sorting order
+      page: parsedPage > 0 ? parsedPage : 1,
+      pageSize: parsedPageSize > 0 ? parsedPageSize : 10,
+    });
+
+    res.status(200).json(products);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch filtered products" });
   }
 };
 
@@ -137,4 +182,6 @@ module.exports = {
   get_all_categories,
   get_product_by_id,
   getAllProductsController,
+  get_Home_Page_Products,
+  get_Filtered_Products
 };

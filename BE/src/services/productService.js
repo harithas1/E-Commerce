@@ -10,6 +10,7 @@ const addProduct = async ({
   stock,
   image,
 }) => {
+  console.log("Adding product...");
   // Check if the category exists
   const category = await prisma.category.findUnique({
     where: { id: categoryId },
@@ -35,6 +36,8 @@ const addProduct = async ({
   return newProduct;
 };
 
+// ----------------------------------------------------------------------------------------
+
 // Service to update an existing product
 const updateProduct = async ({
   productId,
@@ -44,6 +47,7 @@ const updateProduct = async ({
   stock,
   image,
 }) => {
+  console.log("Updating product...");
   // Check if the product exists
   const existingProduct = await prisma.product.findUnique({
     where: { id: productId },
@@ -68,8 +72,12 @@ const updateProduct = async ({
   return updatedProduct;
 };
 
+
+// ----------------------------------------------------------------------------------------
+
 // Service to delete a product
 const deleteProduct = async (productId) => {
+  console.log("Deleting product...");
   // Check if the product exists
   const existingProduct = await prisma.product.findUnique({
     where: { id: productId },
@@ -85,8 +93,11 @@ const deleteProduct = async (productId) => {
   });
 };
 
+// ----------------------------------------------------------------------------------------
+
 // Service to list all products of a seller
 const listProductsBySeller = async (sellerId) => {
+  console.log("Listing products by seller...");
   // Retrieve all products from the seller
   const products = await prisma.product.findMany({
     where: { sellerId },
@@ -95,8 +106,12 @@ const listProductsBySeller = async (sellerId) => {
   return products;
 };
 
+// ----------------------------------------------------------------------------------------
+
 // add category
 const addCategory = async (categoryName) => {
+  console.log("Adding category...");
+  
   // Create and return the new category
   const newCategory = await prisma.category.create({
     data: {
@@ -107,8 +122,11 @@ const addCategory = async (categoryName) => {
   return newCategory;
 };
 
+// ----------------------------------------------------------------------------------------
+
 // get all categories
 const getAllCategories = async () => {
+  console.log("Fetching all categories...");
   const categories = await prisma.category.findMany();
   return categories;
 };
@@ -122,6 +140,8 @@ const getAllCategories = async () => {
 //     
 
 const getProductById = async (productId) => {
+  console.log("Fetching product by ID...");
+  
   const product = await prisma.product.findUnique({
     where: { id: productId },
   });
@@ -129,10 +149,13 @@ const getProductById = async (productId) => {
 };
 
 
+// ----------------------------------------------------------------------------------------
 
 // getallproducts
 // Service to fetch all products
 const getAllProducts = async (page, pageSize = 10) => {
+  console.log("Fetching all products...");
+  
   try {
     const products = await prisma.product.findMany({
       skip: (page - 1) * pageSize,  // Pagination logic
@@ -156,6 +179,104 @@ const getAllProducts = async (page, pageSize = 10) => {
   }
 };
 
+// ----------------------------------------------------------------------------------------
+
+const getHomePageProducts = async (limit = 10) => {
+  console.log("Fetching home page products...");
+  
+  try {
+    const [bestSellers, newestArrivals] = await Promise.all([
+      prisma.product.findMany({
+        take: limit,
+        orderBy: {
+          orders: { _count: "desc" }, // Sort by most ordered
+        },
+        include: {
+          category: true,
+          reviews: true,
+        },
+      }),
+      prisma.product.findMany({
+        take: limit,
+        orderBy: {
+          createdAt: "desc", // Sort by newest first
+        },
+        include: {
+          category: true,
+          reviews: true,
+        },
+      }),
+    ]);
+
+    return { bestSellers, newestArrivals };
+  } catch (error) {
+
+    console.error("Error fetching home page products:", error);
+    throw new Error("Failed to fetch home page products");
+  }
+};
+
+
+// ----------------------------------------------------------------------------------------
+
+// Service to filter products by category, price range, and search by name.
+
+
+const filterProducts = async ({
+  categoryId,
+  minPrice,
+  maxPrice,
+  search,
+  sortBy,
+  order,
+  page,
+  pageSize,
+}) => {
+  try {
+    const skip = (page - 1) * pageSize; // Pagination logic
+
+    const products = await prisma.product.findMany({
+      where: {
+        categoryId: categoryId || undefined,
+        price: {
+          gte: minPrice || 0,
+          lte: maxPrice || undefined,
+        },
+        title: search ? { contains: search, mode: "insensitive" } : undefined, // Case-insensitive search
+      },
+      orderBy: {
+        [sortBy]: order, // Dynamic sorting (e.g., price: "asc" or "desc")
+      },
+      skip,
+      take: pageSize,
+      include: {
+        category: true,
+        reviews: true,
+      },
+    });
+
+    // Total products count for pagination
+    const totalProducts = await prisma.product.count({
+      where: {
+        categoryId: categoryId || undefined,
+        price: {
+          gte: minPrice || 0,
+          lte: maxPrice || undefined,
+        },
+        title: search ? { contains: search, mode: "insensitive" } : undefined,
+      },
+    });
+
+    return {
+      data: products,
+      totalPages: Math.ceil(totalProducts / pageSize),
+      currentPage: page,
+    };
+  } catch (error) {
+    console.error("Error filtering products:", error);
+    throw new Error("Failed to filter products");
+  }
+};
 
 module.exports = {
   addProduct,
@@ -165,5 +286,7 @@ module.exports = {
   addCategory,
   getAllCategories,
   getProductById,
-  getAllProducts
+  getAllProducts,
+  getHomePageProducts,
+  filterProducts
 };
