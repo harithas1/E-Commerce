@@ -9,7 +9,7 @@ const {
   product_by_id,
   // getAllProductsController,
   get_Home_Page_Products,
-  get_Filtered_Products
+  // get_Filtered_Products
 } = require("../controller/productController");
 
 const router = express.Router();
@@ -44,6 +44,6 @@ router.get("/home", get_Home_Page_Products);
 
 
 // get_Filtered_Products
-router.get("/filter", get_Filtered_Products);
+// router.get("/filter", get_Filtered_Products);
 
 module.exports = router;

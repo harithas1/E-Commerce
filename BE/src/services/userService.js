@@ -222,6 +222,65 @@ const getHomePageProducts = async (limit = 10) => {
 
 
 
+
+
+const filterProducts = async ({
+  categoryId,
+  minPrice,
+  maxPrice,
+  search,
+  sortBy,
+  order,
+  page,
+  pageSize,
+}) => {
+  try {
+    const skip = (page - 1) * pageSize; // Pagination logic
+
+    // Construct the 'where' clause for dynamic filters
+    const whereConditions = {
+      ...(categoryId && { categoryId }),
+      ...(minPrice && { price: { gte: minPrice } }), // Minimum price filter
+      ...(maxPrice && { price: { lte: maxPrice } }), // Maximum price filter
+      ...(search && { title: { contains: search, mode: "insensitive" } }), // Case-insensitive search
+    };
+
+    // Define sorting dynamically
+    const orderBy = {};
+    if (sortBy) {
+      orderBy[sortBy] = order.toLowerCase() === "desc" ? "desc" : "asc"; // Ensure sorting is either ascending or descending
+    }
+
+    // Fetch products based on the filters and pagination
+    const products = await prisma.product.findMany({
+      where: whereConditions,
+      orderBy,
+      skip,
+      take: pageSize,
+      include: {
+        category: true,
+        reviews: true,
+      },
+    });
+
+    // Fetch total count for pagination
+    const totalProducts = await prisma.product.count({
+      where: whereConditions,
+    });
+
+    return {
+      data: products,
+      totalPages: Math.ceil(totalProducts / pageSize),
+      currentPage: page,
+    };
+  } catch (error) {
+    console.error("Error filtering products:", error);
+    throw new Error("Failed to filter products");
+  }
+};
+
+
+
 module.exports = {
   registerUser,
   verifyEmail,
@@ -230,4 +289,5 @@ module.exports = {
   createOrder,
   getAllProducts,
   getHomePageProducts,
+  filterProducts,
 };

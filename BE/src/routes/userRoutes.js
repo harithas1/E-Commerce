@@ -7,6 +7,7 @@ const {
   create_order,
   get_all_products,
   get_Home_Page_Products,
+  get_Filtered_Products,
 } = require("../controller/userController");
 
 const router = express.Router();
@@ -26,5 +27,9 @@ router.get("/products", get_all_products);
 
 // get home product
 router.get("/homeproducts", get_Home_Page_Products);
+
+
+// filter
+router.get("/filter", get_Filtered_Products);
 
 module.exports = router;

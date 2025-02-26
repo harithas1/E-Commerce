@@ -5,7 +5,8 @@ const {
   createReview,
   createOrder,
   getAllProducts,
-  getHomePageProducts
+  getHomePageProducts,
+  filterProducts,
 } = require("../services/userService");
 
 const register_user = async (req, res) => {
@@ -85,6 +86,56 @@ const get_Home_Page_Products = async (req, res) => {
   }
 };
 
+
+
+
+const get_Filtered_Products = async (req, res) => {
+  try {
+    const {
+      categoryId,
+      minPrice,
+      maxPrice,
+      sortBy = "price",
+      order = "asc",
+      page = 1,
+      pageSize = 10,
+    } = req.query;
+
+    // Parse page and pageSize to integers, fall back to default values if necessary
+    const parsedPage = parseInt(page, 10);
+    const parsedPageSize = parseInt(pageSize, 10);
+
+    // Validate that page and pageSize are positive numbers
+    if (parsedPage <= 0 || parsedPageSize <= 0) {
+      return res
+        .status(400)
+        .json({ message: "Page and pageSize must be positive integers" });
+    }
+
+    // Convert minPrice and maxPrice to float if they are provided
+    const parsedMinPrice = minPrice ? parseFloat(minPrice) : undefined;
+    const parsedMaxPrice = maxPrice ? parseFloat(maxPrice) : undefined;
+
+    // Call the filterProducts function from the service layer
+    const products = await filterProducts({
+      categoryId: categoryId ? parseInt(categoryId, 10) : undefined, // Ensure categoryId is parsed to Int
+      minPrice: parsedMinPrice,
+      maxPrice: parsedMaxPrice,
+      sortBy,
+      order: order.toLowerCase() === "desc" ? "desc" : "asc", // Ensure valid sorting order
+      page: parsedPage,
+      pageSize: parsedPageSize,
+    });
+
+    // Send the filtered products in the response
+    res.status(200).json(products);
+  } catch (error) {
+    console.error("Error fetching filtered products:", error);
+    res.status(500).json({ message: "Failed to fetch filtered products" });
+  }
+};
+
+
 module.exports = {
   register_user,
   verify_email,
@@ -93,4 +144,5 @@ module.exports = {
   create_order,
   get_all_products,
   get_Home_Page_Products,
+  get_Filtered_Products,
 };
