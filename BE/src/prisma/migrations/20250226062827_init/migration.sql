@@ -12,7 +12,7 @@ CREATE TYPE "ShipmentStatus" AS ENUM ('PROCESSING', 'SHIPPED', 'DELIVERED');
 
 -- CreateTable
 CREATE TABLE "User" (
-    "id" TEXT NOT NULL,
+    "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "password" TEXT NOT NULL,
@@ -26,16 +26,16 @@ CREATE TABLE "User" (
 
 -- CreateTable
 CREATE TABLE "Product" (
-    "id" TEXT NOT NULL,
+    "id" SERIAL NOT NULL,
     "title" TEXT NOT NULL,
     "description" TEXT NOT NULL,
-    "categoryId" TEXT NOT NULL,
+    "categoryId" INTEGER NOT NULL,
     "price" DOUBLE PRECISION NOT NULL,
     "discount" DOUBLE PRECISION NOT NULL DEFAULT 0.0,
     "rating" DOUBLE PRECISION NOT NULL DEFAULT 0.0,
     "stock" INTEGER NOT NULL,
     "image" TEXT NOT NULL,
-    "sellerId" TEXT NOT NULL,
+    "sellerId" INTEGER NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -44,7 +44,7 @@ CREATE TABLE "Product" (
 
 -- CreateTable
 CREATE TABLE "Category" (
-    "id" TEXT NOT NULL,
+    "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
 
     CONSTRAINT "Category_pkey" PRIMARY KEY ("id")
@@ -52,9 +52,9 @@ CREATE TABLE "Category" (
 
 -- CreateTable
 CREATE TABLE "Cart" (
-    "id" TEXT NOT NULL,
-    "userId" TEXT NOT NULL,
-    "productId" TEXT NOT NULL,
+    "id" SERIAL NOT NULL,
+    "userId" INTEGER NOT NULL,
+    "productId" INTEGER NOT NULL,
     "quantity" INTEGER NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -63,9 +63,9 @@ CREATE TABLE "Cart" (
 
 -- CreateTable
 CREATE TABLE "Wishlist" (
-    "id" TEXT NOT NULL,
-    "userId" TEXT NOT NULL,
-    "productId" TEXT NOT NULL,
+    "id" SERIAL NOT NULL,
+    "userId" INTEGER NOT NULL,
+    "productId" INTEGER NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "Wishlist_pkey" PRIMARY KEY ("id")
@@ -73,9 +73,9 @@ CREATE TABLE "Wishlist" (
 
 -- CreateTable
 CREATE TABLE "Order" (
-    "id" TEXT NOT NULL,
-    "userId" TEXT NOT NULL,
-    "productId" TEXT NOT NULL,
+    "id" SERIAL NOT NULL,
+    "userId" INTEGER NOT NULL,
+    "productId" INTEGER NOT NULL,
     "quantity" INTEGER NOT NULL,
     "totalAmount" DOUBLE PRECISION NOT NULL,
     "status" "OrderStatus" NOT NULL,
@@ -87,9 +87,9 @@ CREATE TABLE "Order" (
 
 -- CreateTable
 CREATE TABLE "Payment" (
-    "id" TEXT NOT NULL,
-    "orderId" TEXT NOT NULL,
-    "userId" TEXT NOT NULL,
+    "id" SERIAL NOT NULL,
+    "orderId" INTEGER NOT NULL,
+    "userId" INTEGER NOT NULL,
     "amount" DOUBLE PRECISION NOT NULL,
     "status" "PaymentStatus" NOT NULL,
     "paymentMethod" TEXT NOT NULL,
@@ -101,9 +101,9 @@ CREATE TABLE "Payment" (
 
 -- CreateTable
 CREATE TABLE "Shipment" (
-    "id" TEXT NOT NULL,
-    "orderId" TEXT NOT NULL,
-    "userId" TEXT NOT NULL,
+    "id" SERIAL NOT NULL,
+    "orderId" INTEGER NOT NULL,
+    "userId" INTEGER NOT NULL,
     "address" TEXT NOT NULL,
     "trackingNumber" TEXT NOT NULL,
     "status" "ShipmentStatus" NOT NULL,
@@ -115,14 +115,14 @@ CREATE TABLE "Shipment" (
 
 -- CreateTable
 CREATE TABLE "Review" (
-    "id" TEXT NOT NULL,
+    "id" SERIAL NOT NULL,
     "rating" INTEGER NOT NULL,
     "comment" TEXT NOT NULL,
     "date" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "reviewerName" TEXT NOT NULL,
     "reviewerEmail" TEXT NOT NULL,
-    "productId" TEXT NOT NULL,
-    "userId" TEXT,
+    "productId" INTEGER NOT NULL,
+    "userId" INTEGER,
 
     CONSTRAINT "Review_pkey" PRIMARY KEY ("id")
 );

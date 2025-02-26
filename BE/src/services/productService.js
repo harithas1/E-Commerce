@@ -209,6 +209,7 @@ const getHomePageProducts = async (limit = 10) => {
           reviews: true,
         },
       }),
+      
     ]);
 
     return { bestSellers, newestArrivals };
