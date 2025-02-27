@@ -95,6 +95,7 @@ const get_Filtered_Products = async (req, res) => {
       categoryId,
       minPrice,
       maxPrice,
+      search, // Add the search parameter
       sortBy = "price",
       order = "asc",
       page = 1,
@@ -121,6 +122,7 @@ const get_Filtered_Products = async (req, res) => {
       categoryId: categoryId ? parseInt(categoryId, 10) : undefined, // Ensure categoryId is parsed to Int
       minPrice: parsedMinPrice,
       maxPrice: parsedMaxPrice,
+      search, // Pass the search parameter to filterProducts
       sortBy,
       order: order.toLowerCase() === "desc" ? "desc" : "asc", // Ensure valid sorting order
       page: parsedPage,
@@ -134,6 +136,7 @@ const get_Filtered_Products = async (req, res) => {
     res.status(500).json({ message: "Failed to fetch filtered products" });
   }
 };
+
 
 
 module.exports = {
