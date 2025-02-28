@@ -11,25 +11,20 @@ const addToCart = async ({ userId, productId, quantity }) => {
     throw new Error("Product not found");
   }
 
+  // Check if requested quantity exceeds stock
+  if (quantity > product.stock) {
+    throw new Error(`Only ${product.stock} items available in stock`);
+  }
+
   // Check if the product is already in the user's cart
-  const existingCartItem = await prisma.cart.findUnique({
-    where: {
-      userId_productId: {
-        userId,
-        productId,
-      },
-    },
+  const existingCartItem = await prisma.cart.findFirst({
+    where: { userId, productId },
   });
 
   if (existingCartItem) {
-    // If the product already exists, just update the quantity
+    // If the product exists, update the quantity
     const updatedCartItem = await prisma.cart.update({
-      where: {
-        userId_productId: {
-          userId,
-          productId,
-        },
-      },
+      where: { id: existingCartItem.id },
       data: {
         quantity: {
           increment: quantity,
@@ -55,21 +50,21 @@ const getCartItems = async (userId) => {
   const cartItems = await prisma.cart.findMany({
     where: { userId },
     include: {
-      product: true, // Include the product details
+      product: true, // Include product details
     },
   });
+
+  if (!cartItems.length) {
+    return { message: "Your cart is empty", items: [] };
+  }
+
   return cartItems;
 };
 
 // Service to remove an item from the cart
 const removeFromCart = async ({ userId, productId }) => {
-  const existingCartItem = await prisma.cart.findUnique({
-    where: {
-      userId_productId: {
-        userId,
-        productId,
-      },
-    },
+  const existingCartItem = await prisma.cart.findFirst({
+    where: { userId, productId },
   });
 
   if (!existingCartItem) {
@@ -77,24 +72,22 @@ const removeFromCart = async ({ userId, productId }) => {
   }
 
   await prisma.cart.delete({
-    where: {
-      userId_productId: {
-        userId,
-        productId,
-      },
-    },
+    where: { id: existingCartItem.id },
   });
 
-  return { message: "Item removed from cart" };
+  return { message: "Item removed from cart", deletedItem: existingCartItem };
 };
 
 // Service to clear all items in the cart for a user
 const clearCart = async (userId) => {
-  await prisma.cart.deleteMany({
+  const deletedItems = await prisma.cart.deleteMany({
     where: { userId },
   });
 
-  return { message: "Cart cleared" };
+  return {
+    message: "Cart cleared",
+    itemsDeleted: deletedItems.count,
+  };
 };
 
 module.exports = {

@@ -3,6 +3,7 @@ const cors = require("cors");
 const userRoutes = require("./routes/userRoutes");
 const productRoutes = require("./routes/productRoutes");
 const cartRoutes = require("./routes/cartRoutes");
+const wishlistRoutes = require("./routes/wishlistRoutes");
 
 const app = express();
 
@@ -25,4 +26,10 @@ app.get("/test", (req, res) => {
 });
 
 
+
+// Add wishlist routes
+app.use("/api/wishlist", wishlistRoutes);
+
 module.exports = app;
+
+

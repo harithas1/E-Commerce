@@ -95,47 +95,50 @@ const get_Filtered_Products = async (req, res) => {
       categoryId,
       minPrice,
       maxPrice,
-      search, // Add the search parameter
+      search,
       sortBy = "price",
       order = "asc",
       page = 1,
       pageSize = 10,
     } = req.query;
 
-    // Parse page and pageSize to integers, fall back to default values if necessary
-    const parsedPage = parseInt(page, 10);
-    const parsedPageSize = parseInt(pageSize, 10);
+    // Parse and validate page and pageSize
+    const parsedPage = Math.max(parseInt(page, 10), 1); // Ensure page is at least 1
+    const parsedPageSize = Math.max(parseInt(pageSize, 10), 1); // Ensure pageSize is at least 1
 
-    // Validate that page and pageSize are positive numbers
     if (parsedPage <= 0 || parsedPageSize <= 0) {
       return res
         .status(400)
         .json({ message: "Page and pageSize must be positive integers" });
     }
 
-    // Convert minPrice and maxPrice to float if they are provided
+    // Convert price filters if provided
     const parsedMinPrice = minPrice ? parseFloat(minPrice) : undefined;
     const parsedMaxPrice = maxPrice ? parseFloat(maxPrice) : undefined;
 
-    // Call the filterProducts function from the service layer
+    // Filter products with the optimized function
     const products = await filterProducts({
-      categoryId: categoryId ? parseInt(categoryId, 10) : undefined, // Ensure categoryId is parsed to Int
+      categoryId: categoryId ? parseInt(categoryId, 10) : undefined,
       minPrice: parsedMinPrice,
       maxPrice: parsedMaxPrice,
-      search, // Pass the search parameter to filterProducts
+      search,
       sortBy,
       order: order.toLowerCase() === "desc" ? "desc" : "asc", // Ensure valid sorting order
       page: parsedPage,
       pageSize: parsedPageSize,
     });
 
-    // Send the filtered products in the response
+    // Return filtered products with pagination info
     res.status(200).json(products);
   } catch (error) {
     console.error("Error fetching filtered products:", error);
     res.status(500).json({ message: "Failed to fetch filtered products" });
   }
 };
+
+
+
+// -------------------------------------------------------------
 
 
 

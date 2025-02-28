@@ -8,7 +8,6 @@ const {
   productById,
   getAllProducts,
   getHomePageProducts,
-  // filterProducts,
 } = require("../services/productService");
 
 // Controller for adding a product
@@ -127,7 +126,7 @@ const product_by_id = async (req, res) => {
   }
 };
 
-const getAllProductsController = async (req, res) => {
+const get_all_products = async (req, res) => {
   const { page = 1, pageSize = 10 } = req.query; // Extract page and pageSize from query params
 
   try {
@@ -157,36 +156,7 @@ const get_Home_Page_Products = async (req, res) => {
 
 
 
-// const get_Filtered_Products = async (req, res) => {
-//   try {
-//     const {
-//       categoryId,
-//       minPrice,
-//       maxPrice,
-//       sortBy = "price",
-//       order = "asc",
-//       page = 1,
-//       pageSize = 10,
-//     } = req.query;
 
-//     const parsedPage = parseInt(page, 10);
-//     const parsedPageSize = parseInt(pageSize, 10);
-
-//     const products = await filterProducts({
-//       categoryId,
-//       minPrice: minPrice ? parseFloat(minPrice) : undefined,
-//       maxPrice: maxPrice ? parseFloat(maxPrice) : undefined,
-//       sortBy,
-//       order: order.toLowerCase() === "desc" ? "desc" : "asc", // Ensure valid sorting order
-//       page: parsedPage > 0 ? parsedPage : 1,
-//       pageSize: parsedPageSize > 0 ? parsedPageSize : 10,
-//     });
-
-//     res.status(200).json(products);
-//   } catch (error) {
-//     res.status(500).json({ message: "Failed to fetch filtered products" });
-//   }
-// };
 
 module.exports = {
   add_product,
@@ -196,7 +166,7 @@ module.exports = {
   add_category,
   get_all_categories,
   product_by_id,
-  getAllProductsController,
+  get_all_products,
   get_Home_Page_Products,
-  // get_Filtered_Products,
+  
 };

@@ -22,3 +22,13 @@ router.delete("/clear", clear_cart);
 
 module.exports = router;
 
+
+// get all routes with prefix /api/cart with params/query
+
+// 1. add to cart -- method: POST -- endpoint: https://e-commerce-ecuo.onrender.com/api/cart/add -- body: {userId, productId, quantity}
+
+// 2. get cart items -- method: GET -- endpoint: https://e-commerce-ecuo.onrender.com/api/cart/items -- query: {userId}
+
+// 3. remove from cart -- method: DELETE -- endpoint: https://e-commerce-ecuo.onrender.com/api/cart/remove -- body: {userId, productId}
+
+// 4. clear cart -- method: DELETE -- endpoint: https://e-commerce-ecuo.onrender.com/api/cart/clear -- query: {userId}

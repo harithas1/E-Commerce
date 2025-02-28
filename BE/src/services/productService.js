@@ -223,64 +223,7 @@ const getHomePageProducts = async (limit = 10) => {
 
 // ----------------------------------------------------------------------------------------
 
-// Service to filter products by category, price range, and search by name.
 
-
-// const filterProducts = async ({
-//   categoryId,
-//   minPrice,
-//   maxPrice,
-//   search,
-//   sortBy,
-//   order,
-//   page,
-//   pageSize,
-// }) => {
-//   try {
-//     const skip = (page - 1) * pageSize; // Pagination logic
-
-//     const products = await prisma.product.findMany({
-//       where: {
-//         categoryId: categoryId || undefined,
-//         price: {
-//           gte: minPrice || 0,
-//           lte: maxPrice || undefined,
-//         },
-//         title: search ? { contains: search, mode: "insensitive" } : undefined, // Case-insensitive search
-//       },
-//       orderBy: {
-//         [sortBy]: order, // Dynamic sorting (e.g., price: "asc" or "desc")
-//       },
-//       skip,
-//       take: pageSize,
-//       include: {
-//         category: true,
-//         reviews: true,
-//       },
-//     });
-
-//     // Total products count for pagination
-//     const totalProducts = await prisma.product.count({
-//       where: {
-//         categoryId: categoryId || undefined,
-//         price: {
-//           gte: minPrice || 0,
-//           lte: maxPrice || undefined,
-//         },
-//         title: search ? { contains: search, mode: "insensitive" } : undefined,
-//       },
-//     });
-
-//     return {
-//       data: products,
-//       totalPages: Math.ceil(totalProducts / pageSize),
-//       currentPage: page,
-//     };
-//   } catch (error) {
-//     console.error("Error filtering products:", error);
-//     throw new Error("Failed to filter products");
-//   }
-// };
 
 module.exports = {
   addProduct,
@@ -292,5 +235,4 @@ module.exports = {
   productById,
   getAllProducts,
   getHomePageProducts,
-  // filterProducts
 };

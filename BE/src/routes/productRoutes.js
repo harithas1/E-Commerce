@@ -7,9 +7,8 @@ const {
   add_category,
   get_all_categories,
   product_by_id,
-  // getAllProductsController,
+  get_all_products,
   get_Home_Page_Products,
-  // get_Filtered_Products
 } = require("../controller/productController");
 
 const router = express.Router();
@@ -36,14 +35,44 @@ router.get("/category-list", get_all_categories);
 router.get("/:productId", product_by_id);
 
 
-// router.get("/", getAllProductsController);
 
+// get all products
+router.get("/", get_all_products);
 
 // get_Home_Page_Products
 router.get("/home", get_Home_Page_Products);
 
 
-// get_Filtered_Products
-// router.get("/filter", get_Filtered_Products);
 
 module.exports = router;
+
+
+
+// all product endpoins with params/body
+
+// get all products  -- method: GET -- endpoint: https://e-commerce-ecuo.onrender.com/api/products/
+
+// get product by id -- method: GET -- endpoint: https://e-commerce-ecuo.onrender.com/api/products/:productId 
+
+// add product -- method: POST -- endpoint: https://e-commerce-ecuo.onrender.com/api/products/add -- body: {title, description, price, stock, categoryId}
+
+// update product -- method: PUT -- endpoint: https://e-commerce-ecuo.onrender.com/api/products/update -- body: {productId, title, description, price, stock, image}
+
+// delete product -- method: DELETE -- endpoint: https://e-commerce-ecuo.onrender.com/api/products/delete -- body: {productId}
+
+
+// add category -- method: POST -- endpoint: https://e-commerce-ecuo.onrender.com/api/products/add-category -- body: {name}
+
+
+// get all categories -- method: GET -- endpoint: https://e-commerce-ecuo.onrender.com/api/products/category-list
+
+// get home page products -- method: GET -- endpoint: https://e-commerce-ecuo.onrender.com/api/products/home
+
+
+// get all products of a seller -- method: GET -- endpoint: https://e-commerce-ecuo.onrender.com/api/products/list -- query: {sellerId}
+
+
+
+
+
+

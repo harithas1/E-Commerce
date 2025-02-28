@@ -237,33 +237,36 @@ const filterProducts = async ({
   try {
     const skip = (page - 1) * pageSize; // Pagination logic
 
-    // Construct the 'where' clause for dynamic filters
+    // Build the whereConditions for dynamic filters
     const whereConditions = {
       ...(categoryId && { categoryId }),
-      ...(minPrice && { price: { gte: minPrice } }), // Minimum price filter
-      ...(maxPrice && { price: { lte: maxPrice } }), // Maximum price filter
-      ...(search && { title: { contains: search, mode: "insensitive" } }), // Case-insensitive search
+      ...(minPrice && { price: { gte: minPrice } }),
+      ...(maxPrice && { price: { lte: maxPrice } }),
+      ...(search && { title: { contains: search, mode: "insensitive" } }),
     };
 
-    // Define sorting dynamically
+    // Handle sorting order
     const orderBy = {};
     if (sortBy) {
-      orderBy[sortBy] = order.toLowerCase() === "desc" ? "desc" : "asc"; // Ensure sorting is either ascending or descending
+      const validSortFields = ["price", "title", "createdAt"]; // Define the valid fields for sorting
+      if (validSortFields.includes(sortBy)) {
+        orderBy[sortBy] = order.toLowerCase() === "desc" ? "desc" : "asc";
+      }
     }
 
-    // Fetch products based on the filters and pagination
+    // Prisma query for filtered products
     const products = await prisma.product.findMany({
       where: whereConditions,
       orderBy,
       skip,
       take: pageSize,
       include: {
-        category: true,
-        reviews: true,
+        category: true, // Optional, add logic to include only when requested
+        reviews: true, // Optional, add logic to include only when requested
       },
     });
 
-    // Fetch total count for pagination
+    // Total count for pagination (optional: optimize later with cursor-based pagination)
     const totalProducts = await prisma.product.count({
       where: whereConditions,
     });
@@ -280,6 +283,11 @@ const filterProducts = async ({
 };
 
 
+// ------------------------------------------------------------
+
+
+
+
 
 module.exports = {
   registerUser,
@@ -290,5 +298,6 @@ module.exports = {
   getAllProducts,
   getHomePageProducts,
   filterProducts,
+  
 };
 
