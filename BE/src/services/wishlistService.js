@@ -6,46 +6,49 @@ const prisma = require("../prisma/prismaClient");
 
 const addToWishlist = async (userId, productId) => {
   try {
-    const wishlist = await prisma.wishlist.create({
+    const wishlistItem = await prisma.wishlist.create({
       data: {
         userId,
         productId,
       },
     });
-    return wishlist;
+    return wishlistItem;
   } catch (error) {
     console.error("Error adding to wishlist:", error);
     throw new Error("Failed to add to wishlist");
   }
 };
-
 // Service to remove a product from the wishlist
 
 const removeFromWishlist = async (userId, productId) => {
   try {
-    const wishlist = await prisma.wishlist.delete({
-      where: {
-        userId_productId: {
-          userId,
-          productId,
-        },
-      },
+    const wishlistItem = await prisma.wishlist.findFirst({
+      where: { userId, productId },
     });
-    return wishlist;
+
+    if (!wishlistItem) {
+      throw new Error("Wishlist item not found");
+    }
+
+    await prisma.wishlist.delete({
+      where: { id: wishlistItem.id }, 
+    });
+
+    return { success: true, message: "Removed from wishlist" };
   } catch (error) {
     console.error("Error removing from wishlist:", error);
     throw new Error("Failed to remove from wishlist");
   }
 };
 
-
 // Service to get all products in the wishlist
 
 const getWishlist = async (userId) => {
   try {
     const wishlist = await prisma.wishlist.findMany({
-      where: {
-        userId,
+      where: { userId },
+      include: {
+        product: true,
       },
     });
     return wishlist;

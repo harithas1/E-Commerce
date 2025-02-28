@@ -18,8 +18,8 @@ module.exports = router;
 
 // get all routes with prefix /api/wishlist with params/query
 
-// 1. add to wishlist -- method: POST -- endpoint: https://e-commerce-ecuo.onrender.com/api/wishlist/add -- body: {userId, productId}
-
+// 1. add to wishlist -- method: POST -- endpoint: https://e-commerce-ecuo.onrender.com/api/wishlist/add -- params: {userId, productId}
+// example:  https://e-commerce-ecuo.onrender.com/api/wishlist/add?userId=123&productId=456
 // 2. remove from wishlist -- method: DELETE -- endpoint: https://e-commerce-ecuo.onrender.com/api/wishlist/remove -- body: {userId, productId}
 
 // 3. get wishlist -- method: GET -- endpoint: https://e-commerce-ecuo.onrender.com/api/wishlist/get -- query: {userId}

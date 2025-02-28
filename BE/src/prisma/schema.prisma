@@ -77,6 +77,7 @@ model Wishlist {
   // Relationships
   user    User    @relation(fields: [userId], references: [id])
   product Product @relation(fields: [productId], references: [id])
+  @@unique([userId, productId])
 }
 
 model Order {
