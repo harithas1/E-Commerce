@@ -10,16 +10,16 @@ const add_to_cart = async (req, res) => {
   try {
     const { userId, productId, quantity } = req.body;
 
-    if (!userId || !productId || !quantity) {
-      return res.status(400).json({ message: "Missing required fields" });
+    if (!userId || !productId || !quantity || isNaN(quantity) || quantity < 1) {
+      return res
+        .status(400)
+        .json({ message: "Invalid quantity. Must be a positive number." });
     }
 
     const cartItem = await addToCart({ userId, productId, quantity });
-    return res.status(201).json({
-      success: true,
-      message: "Item added to cart",
-      cartItem,
-    });
+    return res
+      .status(201)
+      .json({ success: true, message: "Item added to cart", cartItem });
   } catch (error) {
     return res.status(500).json({ success: false, message: error.message });
   }
@@ -28,18 +28,23 @@ const add_to_cart = async (req, res) => {
 // Controller to get all items in the cart for a user
 const get_cart_items = async (req, res) => {
   try {
-    const userId = req.params.userId; // Extract userId from params
+    const userId = parseInt(req.params.userId); // Ensure userId is an integer
 
     if (!userId) {
       return res.status(400).json({ message: "User ID is required" });
     }
 
     const cartItems = await getCartItems(userId);
-    return res.status(200).json({
-      success: true,
-      message: cartItems.length ? "Cart items retrieved" : "Cart is empty",
-      cartItems,
-    });
+
+    if (!Array.isArray(cartItems)) {
+      return res
+        .status(200)
+        .json({ success: true, message: "Cart is empty", cartItems: [] });
+    }
+
+    return res
+      .status(200)
+      .json({ success: true, message: "Cart items retrieved", cartItems });
   } catch (error) {
     return res.status(500).json({ success: false, message: error.message });
   }
@@ -55,11 +60,7 @@ const remove_from_cart = async (req, res) => {
     }
 
     const response = await removeFromCart({ userId, productId });
-    return res.status(200).json({
-      success: true,
-      message: "Item removed from cart",
-      response,
-    });
+    return res.status(200).json({ success: true, ...response });
   } catch (error) {
     return res.status(500).json({ success: false, message: error.message });
   }
@@ -75,11 +76,7 @@ const clear_cart = async (req, res) => {
     }
 
     const response = await clearCart(userId);
-    return res.status(200).json({
-      success: true,
-      message: "Cart cleared",
-      response,
-    });
+    return res.status(200).json({ success: true, ...response });
   } catch (error) {
     return res.status(500).json({ success: false, message: error.message });
   }

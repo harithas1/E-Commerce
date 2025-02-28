@@ -2,6 +2,9 @@ const prisma = require("../prisma/prismaClient");
 
 // Service to add a product to the cart
 const addToCart = async ({ userId, productId, quantity }) => {
+  if (!userId || !productId || !quantity) {
+    throw new Error("Missing required fields");
+  }
   // Check if the product exists
   const product = await prisma.product.findUnique({
     where: { id: productId },
@@ -20,17 +23,19 @@ const addToCart = async ({ userId, productId, quantity }) => {
   const existingCartItem = await prisma.cart.findFirst({
     where: { userId, productId },
   });
+  
 
   if (existingCartItem) {
+    if (existingCartItem.quantity + quantity < 1) {
+      throw new Error("Quantity must be at least 1");
+    }
     // If the product exists, update the quantity
     const updatedCartItem = await prisma.cart.update({
       where: { id: existingCartItem.id },
       data: {
-        quantity: {
-          increment: quantity,
-        },
+        quantity: existingCartItem.quantity + quantity,
       },
-    });
+    })
     return updatedCartItem;
   } else {
     // If the product is not in the cart, create a new entry
@@ -47,45 +52,55 @@ const addToCart = async ({ userId, productId, quantity }) => {
 
 // Service to get all items in the cart for a user
 const getCartItems = async (userId) => {
+  if (!userId) throw new Error("userId is required.");
+
   const cartItems = await prisma.cart.findMany({
     where: { userId },
     include: {
-      product: true, // Include product details
+      product: {
+        select: {
+          id: true,
+          title: true,
+          price: true,
+          image: true,
+        },
+      },
     },
   });
 
-  if (!cartItems.length) {
-    return { message: "Your cart is empty", items: [] };
-  }
+  if (!cartItems.length) return { message: "Your cart is empty", items: [] };
 
   return cartItems;
 };
 
 // Service to remove an item from the cart
 const removeFromCart = async ({ userId, productId }) => {
+  if (!userId || !productId)
+    throw new Error("userId and productId are required.");
+
   const existingCartItem = await prisma.cart.findFirst({
     where: { userId, productId },
   });
 
-  if (!existingCartItem) {
-    throw new Error("Item not found in the cart");
-  }
+  if (!existingCartItem) throw new Error("Item not found in the cart");
 
-  await prisma.cart.delete({
-    where: { id: existingCartItem.id },
-  });
+  await prisma.cart.delete({ where: { id: existingCartItem.id } });
 
   return { message: "Item removed from cart", deletedItem: existingCartItem };
 };
 
 // Service to clear all items in the cart for a user
 const clearCart = async (userId) => {
-  const deletedItems = await prisma.cart.deleteMany({
-    where: { userId },
-  });
+  if (!userId) throw new Error("userId is required.");
+
+  const existingItems = await prisma.cart.findMany({ where: { userId } });
+
+  if (!existingItems.length) throw new Error("Cart is already empty");
+
+  const deletedItems = await prisma.cart.deleteMany({ where: { userId } });
 
   return {
-    message: "Cart cleared",
+    message: "Cart cleared successfully",
     itemsDeleted: deletedItems.count,
   };
 };
