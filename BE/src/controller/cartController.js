@@ -28,7 +28,7 @@ const add_to_cart = async (req, res) => {
 // Controller to get all items in the cart for a user
 const get_cart_items = async (req, res) => {
   try {
-    const userId = parseInt(req.query.userId); // Ensure userId is an integer
+    const userId = parseInt(req.params.userId); // Ensure userId is an integer
 
     if (!userId) {
       return res.status(400).json({ message: "User ID is required" });

@@ -12,7 +12,7 @@ const router = express.Router();
 router.post("/add", add_to_cart);
 
 // Get all items in the cart
-router.get("/items", get_cart_items);
+router.get("/items/:userId", get_cart_items);
 
 // Remove a product from the cart
 router.delete("/remove", remove_from_cart);
@@ -25,13 +25,13 @@ module.exports = router;
 
 // get all routes with prefix /api/cart with params/query
 
-// 1. add to cart -- method: POST -- endpoint: https://e-commerce-ecuo.onrender.com/api/cart/get -- body: {userId, productId, quantity}
+// 1. add to cart -- method: POST -- endpoint: https://e-commerce-ecuo.onrender.com/api/cart/add 
 
 // 2. get cart items -- method: GET -- endpoint: https://e-commerce-ecuo.onrender.com/api/cart/items  -- params: {userId}
-// example: https://e-commerce-ecuo.onrender.com/api/cart/items?userId=123
+// example: https://e-commerce-ecuo.onrender.com/api/cart/items/{userId}
 
 // 3. remove from cart -- method: DELETE -- endpoint: https://e-commerce-ecuo.onrender.com/api/cart/remove -- body: {userId, productId}
 
-// 4. clear cart -- method: DELETE -- endpoint: https://e-commerce-ecuo.onrender.com/api/cart/clear -- query: {userId}
+// 4. clear cart -- method: DELETE -- endpoint: https://e-commerce-ecuo.onrender.com/api/cart/clear?userId={userId}
 
 
