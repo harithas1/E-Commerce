@@ -4,6 +4,7 @@ const userRoutes = require("./routes/userRoutes");
 const productRoutes = require("./routes/productRoutes");
 const cartRoutes = require("./routes/cartRoutes");
 const wishlistRoutes = require("./routes/wishlistRoutes");
+const reviewRoutes = require("./routes/reviewsRoutes");
 
 const app = express();
 
@@ -21,9 +22,16 @@ app.use("/api/products", productRoutes);
 app.use("/api/cart", cartRoutes);
 
 
+// Add review routes
+app.use("/api/reviews", reviewRoutes);
+
+
 app.get("/test", (req, res) => {
   res.send("Test route works!");
 });
+
+
+
 
 
 

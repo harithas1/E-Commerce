@@ -25,13 +25,17 @@ module.exports = router;
 
 // get all routes with prefix /api/cart with params/query
 
-// 1. add to cart -- method: POST -- endpoint: https://e-commerce-ecuo.onrender.com/api/cart/add 
+// 1. Add to cart -- method: POST 
+//    Endpoint: https://e-commerce-ecuo.onrender.com/api/cart/add 
+//    Body: { userId, productId, quantity }
 
-// 2. get cart items -- method: GET -- endpoint: https://e-commerce-ecuo.onrender.com/api/cart/items  -- params: {userId}
-// example: https://e-commerce-ecuo.onrender.com/api/cart/items/{userId}
+// 2. Get cart items -- method: GET  
+//    Endpoint: https://e-commerce-ecuo.onrender.com/api/cart/items/:userId  
 
-// 3. remove from cart -- method: DELETE -- endpoint: https://e-commerce-ecuo.onrender.com/api/cart/remove -- body: {userId, productId}
+// 3. Remove from cart -- method: DELETE  
+//    Endpoint: https://e-commerce-ecuo.onrender.com/api/cart/remove  
+//    Body: { userId, productId }
 
-// 4. clear cart -- method: DELETE -- endpoint: https://e-commerce-ecuo.onrender.com/api/cart/clear?userId={userId}
-
-
+// 4. Clear cart -- method: DELETE  
+//    Endpoint: https://e-commerce-ecuo.onrender.com/api/cart/clear  
+//    Example: https://e-commerce-ecuo.onrender.com/api/cart/clear?userId={userId}
