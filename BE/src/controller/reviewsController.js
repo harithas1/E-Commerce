@@ -13,7 +13,15 @@ const add_review = async (req, res) => {
 
 const get_reviews_by_product = async (req, res) => {
   try {
-    const reviews = await getReviewsByProduct(req.params.productId);
+    const productId = parseInt(req.params.productId); // Convert to integer
+
+    if (isNaN(productId)) {
+      return res
+        .status(400)
+        .json({ error: "Invalid productId. Must be a number." });
+    }
+
+    const reviews = await getReviewsByProduct(productId);
     res.status(200).json(reviews);
   } catch (error) {
     res.status(400).json({ error: error.message });
