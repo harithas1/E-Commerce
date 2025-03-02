@@ -14,7 +14,8 @@ const {
 // Controller for adding a product
 const add_product = async (req, res) => {
   try {
-    const { sellerId, title, description, categoryId, price, stock, image } =
+    const { sellerId } = req.params;
+    const { title, description, categoryId, price, stock, image } =
       req.body;
 
     // Call productService to handle the database logic
