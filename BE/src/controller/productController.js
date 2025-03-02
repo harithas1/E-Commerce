@@ -10,6 +10,7 @@ const {
   getHomePageProducts,
 } = require("../services/productService");
 
+
 // Controller for adding a product
 const add_product = async (req, res) => {
   try {
@@ -34,12 +35,13 @@ const add_product = async (req, res) => {
   }
 };
 
+
+
 // Controller for updating a product
 const update_product = async (req, res) => {
   try {
     const { productId, title, description, price, stock, image } = req.body;
 
-    // Calling productService to update the product
     const updatedProduct = await updateProduct({
       productId,
       title,
@@ -49,19 +51,19 @@ const update_product = async (req, res) => {
       image,
     });
 
-    return res.status(200).json(updatedProduct); // Returns updated product
+    return res.status(200).json(updatedProduct); 
   } catch (error) {
     console.error(error);
     return res.status(500).json({ error: "Something went wrong!" });
   }
 };
 
+
 // Controller for deleting a product
 const delete_product = async (req, res) => {
   try {
     const { productId } = req.body;
 
-    // Call productService to delete the product
     await deleteProduct(productId);
 
     return res.status(200).json({ message: "Product deleted successfully" });
@@ -71,12 +73,13 @@ const delete_product = async (req, res) => {
   }
 };
 
+
+
 // Controller for listing products by sellerId
 const list_products = async (req, res) => {
   try {
     const { sellerId } = req.query;
 
-    // Call productService to list products for a seller
     const products = await listProductsBySeller(sellerId);
 
     return res.status(200).json(products);
@@ -86,20 +89,22 @@ const list_products = async (req, res) => {
   }
 };
 
+
 // Controller for adding a category
 const add_category = async (req, res) => {
   try {
     const { name } = req.body;
 
-    // Call productService to add a category
     const newCategory = await addCategory(name);
 
-    return res.status(201).json(newCategory); // Return the newly created category
+    return res.status(201).json(newCategory); 
   } catch (error) {
     console.error(error);
     return res.status(500).json({ error: "Something went wrong!" });
   }
 };
+
+
 
 // Controller for getting all categories
 const get_all_categories = async (req, res) => {
@@ -111,6 +116,8 @@ const get_all_categories = async (req, res) => {
     return res.status(500).json({ error: "Something went wrong!" });
   }
 };
+
+
 
 const product_by_id = async (req, res) => {
   try {
@@ -127,7 +134,7 @@ const product_by_id = async (req, res) => {
 };
 
 const get_all_products = async (req, res) => {
-  const { page = 1, pageSize = 10 } = req.query; // Extract page and pageSize from query params
+  const { page = 1, pageSize = 10 } = req.query; 
 
   try {
     const products = await getAllProducts(
@@ -144,7 +151,7 @@ const get_all_products = async (req, res) => {
 const get_Home_Page_Products = async (req, res) => {
   console.log("Fetching home page products...");
   try {
-    const limit = parseInt(req.query.limit) || 10; // Default limit is 10
+    const limit = parseInt(req.query.limit) || 10; 
     const products = await getHomePageProducts(limit);
 
     res.status(200).json(products);

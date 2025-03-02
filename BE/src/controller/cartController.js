@@ -28,7 +28,7 @@ const add_to_cart = async (req, res) => {
 // Controller to get all items in the cart for a user
 const get_cart_items = async (req, res) => {
   try {
-    const userId = parseInt(req.params.userId); // Ensure userId is an integer
+    const userId = parseInt(req.params.userId); 
 
     if (!userId) {
       return res.status(400).json({ message: "User ID is required" });
@@ -50,6 +50,7 @@ const get_cart_items = async (req, res) => {
   }
 };
 
+
 // Controller to remove a product from the cart
 const remove_from_cart = async (req, res) => {
   try {
@@ -65,6 +66,8 @@ const remove_from_cart = async (req, res) => {
     return res.status(500).json({ success: false, message: error.message });
   }
 };
+
+
 
 // Controller to clear all items in the cart for a user
 const clear_cart = async (req, res) => {

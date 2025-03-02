@@ -8,7 +8,7 @@ datasource db {
 }
 
 model User {
-  id            Int      @id @default(autoincrement()) // Changed to Int with autoincrement
+  id            Int      @id @default(autoincrement())
   name          String
   email         String   @unique
   password      String
@@ -17,31 +17,26 @@ model User {
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
-  // Relationships
-  products      Product[] // If SELLER, can list multiple products
-  orders        Order[] // If CUSTOMER, can place multiple orders
-  reviews       Review[] // Users can leave reviews
-  cartItems     Cart[] // Users can add multiple items to cart
-  wishlistItems Wishlist[] // Users can add multiple items to wishlist
-  payments      Payment[] // Payment transactions linked to user
-  shipments     Shipment[] // Shipments linked to user
+  products      Product[]
+  orders        Order[]
+  reviews       Review[]
+  cartItems     Cart[]
+  wishlistItems Wishlist[]
 }
 
 model Product {
-  id          Int      @id @default(autoincrement()) // Changed to Int with autoincrement
-  title       String
+  id          Int      @id @default(autoincrement())
   description String
-  categoryId  Int      // Changed to Int for foreign key
+  categoryId  Int
   price       Float
   discount    Float    @default(0.0)
   rating      Float    @default(0.0)
   stock       Int
-  image       String // Image URL for product
-  sellerId    Int      // Changed to Int for foreign key
+  image       String
+  sellerId    Int
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  // Relationships
   seller        User       @relation(fields: [sellerId], references: [id])
   category      Category   @relation(fields: [categoryId], references: [id])
   reviews       Review[]
@@ -51,84 +46,51 @@ model Product {
 }
 
 model Category {
-  id       Int       @id @default(autoincrement()) // Changed to Int with autoincrement
+  id       Int       @id @default(autoincrement())
   name     String    @unique
   products Product[]
 }
 
 model Cart {
-  id        Int      @id @default(autoincrement()) // Changed to Int with autoincrement
-  userId    Int      // Changed to Int for foreign key
-  productId Int      // Changed to Int for foreign key
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  productId Int
   quantity  Int
   createdAt DateTime @default(now())
 
-  // Relationships
   user    User    @relation(fields: [userId], references: [id])
   product Product @relation(fields: [productId], references: [id])
 }
 
 model Wishlist {
-  id        Int      @id @default(autoincrement()) // Changed to Int with autoincrement
-  userId    Int      // Changed to Int for foreign key
-  productId Int      // Changed to Int for foreign key
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  productId Int
   createdAt DateTime @default(now())
 
-  // Relationships
   user    User    @relation(fields: [userId], references: [id])
   product Product @relation(fields: [productId], references: [id])
+
   @@unique([userId, productId])
 }
 
 model Order {
-  id          Int        @id @default(autoincrement()) // Changed to Int with autoincrement
-  userId      Int
-  productId   Int
-  quantity    Int
-  totalAmount Float
-  status      OrderStatus // Pending, Shipped, Delivered, Cancelled
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
+  id              Int         @id @default(autoincrement())
+  userId          Int
+  productId       Int
+  quantity        Int
+  totalAmount     Float
+  status          OrderStatus
+  shippingAddress String
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
 
-  // Relationships
-  user     User      @relation(fields: [userId], references: [id])
-  product  Product   @relation(fields: [productId], references: [id])
-  payment  Payment?
-  shipment Shipment?
-}
-
-model Payment {
-  id            Int        @id @default(autoincrement()) // Changed to Int with autoincrement
-  orderId       Int        @unique
-  userId        Int
-  amount        Float
-  status        PaymentStatus // Pending, Completed, Failed
-  paymentMethod String
-  transactionId String      @unique
-  createdAt     DateTime    @default(now())
-
-  // Relationships
-  user  User  @relation(fields: [userId], references: [id])
-  order Order @relation(fields: [orderId], references: [id])
-}
-
-model Shipment {
-  id                Int         @id @default(autoincrement()) // Changed to Int with autoincrement
-  orderId           Int         @unique
-  userId            Int
-  address           String
-  trackingNumber    String      @unique
-  status            ShipmentStatus // Processing, Shipped, Delivered
-  estimatedDelivery DateTime
-  createdAt         DateTime    @default(now())
-
-  // Relationships
-  user  User  @relation(fields: [userId], references: [id])
-  order Order @relation(fields: [orderId], references: [id])
+  user    User    @relation(fields: [userId], references: [id])
+  product Product @relation(fields: [productId], references: [id])
 }
 
 model Review {
-  id            Int      @id @default(autoincrement()) // Changed to Int with autoincrement
+  id            Int      @id @default(autoincrement())
   rating        Int
   comment       String
   date          DateTime @default(now())
@@ -136,7 +98,6 @@ model Review {
   reviewerEmail String
   productId     Int
 
-  // Relationships
   product Product @relation(fields: [productId], references: [id])
   user    User?   @relation(fields: [userId], references: [id])
   userId  Int?
@@ -152,16 +113,4 @@ enum OrderStatus {
   SHIPPED
   DELIVERED
   CANCELLED
-}
-
-enum PaymentStatus {
-  PENDING
-  COMPLETED
-  FAILED
-}
-
-enum ShipmentStatus {
-  PROCESSING
-  SHIPPED
-  DELIVERED
 }

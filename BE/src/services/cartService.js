@@ -1,11 +1,12 @@
 const prisma = require("../prisma/prismaClient");
 
-// Service to add a product to the cart
+
+
+
 const addToCart = async ({ userId, productId, quantity }) => {
   if (!userId || !productId || !quantity) {
     throw new Error("Missing required fields");
   }
-  // Check if the product exists
   const product = await prisma.product.findUnique({
     where: { id: productId },
   });
@@ -19,7 +20,6 @@ const addToCart = async ({ userId, productId, quantity }) => {
     throw new Error(`Only ${product.stock} items available in stock`);
   }
 
-  // Check if the product is already in the user's cart
   const existingCartItem = await prisma.cart.findFirst({
     where: { userId, productId },
   });
@@ -29,7 +29,6 @@ const addToCart = async ({ userId, productId, quantity }) => {
     if (existingCartItem.quantity + quantity < 1) {
       throw new Error("Quantity must be at least 1");
     }
-    // If the product exists, update the quantity
     const updatedCartItem = await prisma.cart.update({
       where: { id: existingCartItem.id },
       data: {
@@ -38,7 +37,7 @@ const addToCart = async ({ userId, productId, quantity }) => {
     })
     return updatedCartItem;
   } else {
-    // If the product is not in the cart, create a new entry
+   
     const newCartItem = await prisma.cart.create({
       data: {
         userId,
@@ -50,7 +49,7 @@ const addToCart = async ({ userId, productId, quantity }) => {
   }
 };
 
-// Service to get all items in the cart for a user
+
 const getCartItems = async (userId) => {
   if (!userId) throw new Error("userId is required.");
 
@@ -73,7 +72,9 @@ const getCartItems = async (userId) => {
   return cartItems;
 };
 
-// Service to remove an item from the cart
+
+
+
 const removeFromCart = async ({ userId, productId }) => {
   if (!userId || !productId)
     throw new Error("userId and productId are required.");
@@ -88,6 +89,10 @@ const removeFromCart = async ({ userId, productId }) => {
 
   return { message: "Item removed from cart", deletedItem: existingCartItem };
 };
+
+
+
+
 
 // Service to clear all items in the cart for a user
 const clearCart = async (userId) => {

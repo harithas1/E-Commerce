@@ -2,7 +2,6 @@ const prisma = require("../prisma/prismaClient");
 
 
 
-// Service to add a product to the wishlist
 
 const addToWishlist = async (userId, productId) => {
   try {
@@ -12,13 +11,15 @@ const addToWishlist = async (userId, productId) => {
         productId,
       },
     });
+    
     return wishlistItem;
   } catch (error) {
     console.error("Error adding to wishlist:", error);
     throw new Error("Failed to add to wishlist");
   }
 };
-// Service to remove a product from the wishlist
+
+
 
 const removeFromWishlist = async (userId, productId) => {
   try {
@@ -41,7 +42,7 @@ const removeFromWishlist = async (userId, productId) => {
   }
 };
 
-// Service to get all products in the wishlist
+
 
 const getWishlist = async (userId) => {
   try {

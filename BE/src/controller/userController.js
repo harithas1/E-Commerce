@@ -46,7 +46,6 @@ const add_review = async (req, res) => {
   }
 };
 
-// New controller for creating an order
 const create_order = async (req, res) => {
   try {
     const order = await createOrder(req.body);
@@ -102,7 +101,6 @@ const get_Filtered_Products = async (req, res) => {
       pageSize = 10,
     } = req.query;
 
-    // Parse and validate page and pageSize
     const parsedPage = Math.max(parseInt(page, 10), 1); // Ensure page is at least 1
     const parsedPageSize = Math.max(parseInt(pageSize, 10), 1); // Ensure pageSize is at least 1
 
@@ -112,11 +110,9 @@ const get_Filtered_Products = async (req, res) => {
         .json({ message: "Page and pageSize must be positive integers" });
     }
 
-    // Convert price filters if provided
     const parsedMinPrice = minPrice ? parseFloat(minPrice) : undefined;
     const parsedMaxPrice = maxPrice ? parseFloat(maxPrice) : undefined;
 
-    // Filter products with the optimized function
     const products = await filterProducts({
       categoryId: categoryId ? parseInt(categoryId, 10) : undefined,
       minPrice: parsedMinPrice,
@@ -128,7 +124,6 @@ const get_Filtered_Products = async (req, res) => {
       pageSize: parsedPageSize,
     });
 
-    // Return filtered products with pagination info
     res.status(200).json(products);
   } catch (error) {
     console.error("Error fetching filtered products:", error);

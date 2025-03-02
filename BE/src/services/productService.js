@@ -11,7 +11,7 @@ const addProduct = async ({
   image,
 }) => {
   console.log("Adding product...");
-  // Check if the category exists
+
   const category = await prisma.category.findUnique({
     where: { id: categoryId },
   });
@@ -20,7 +20,7 @@ const addProduct = async ({
     throw new Error("Category not found");
   }
 
-  // Create and return the new product
+
   const newProduct = await prisma.product.create({
     data: {
       sellerId,
@@ -38,7 +38,8 @@ const addProduct = async ({
 
 // ----------------------------------------------------------------------------------------
 
-// Service to update an existing product
+
+
 const updateProduct = async ({
   productId,
   title,
@@ -48,7 +49,7 @@ const updateProduct = async ({
   image,
 }) => {
   console.log("Updating product...");
-  // Check if the product exists
+ 
   const existingProduct = await prisma.product.findUnique({
     where: { id: productId },
   });
@@ -57,7 +58,6 @@ const updateProduct = async ({
     throw new Error("Product not found");
   }
 
-  // Update and return the updated product
   const updatedProduct = await prisma.product.update({
     where: { id: productId },
     data: {
@@ -75,7 +75,8 @@ const updateProduct = async ({
 
 // ----------------------------------------------------------------------------------------
 
-// Service to delete a product
+
+
 const deleteProduct = async (productId) => {
   console.log("Deleting product...");
   // Check if the product exists
@@ -95,10 +96,10 @@ const deleteProduct = async (productId) => {
 
 // ----------------------------------------------------------------------------------------
 
-// Service to list all products of a seller
+
+
 const listProductsBySeller = async (sellerId) => {
   console.log("Listing products by seller...");
-  // Retrieve all products from the seller
   const products = await prisma.product.findMany({
     where: { sellerId },
   });
@@ -108,11 +109,9 @@ const listProductsBySeller = async (sellerId) => {
 
 // ----------------------------------------------------------------------------------------
 
-// add category
 const addCategory = async (categoryName) => {
   console.log("Adding category...");
   
-  // Create and return the new category
   const newCategory = await prisma.category.create({
     data: {
       name: categoryName,
@@ -124,7 +123,7 @@ const addCategory = async (categoryName) => {
 
 // ----------------------------------------------------------------------------------------
 
-// get all categories
+
 const getAllCategories = async () => {
   console.log("Fetching all categories...");
   const categories = await prisma.category.findMany();
@@ -142,8 +141,8 @@ const productById = async (productId) => {
    const product = await prisma.product.findUnique({
      where: { id: productId },
      include: {
-       category: true, // Include category information if needed
-       reviews: true, // Optionally include reviews
+       category: true, 
+       reviews: true, 
       
      },
    });
@@ -154,27 +153,25 @@ const productById = async (productId) => {
 
 // ----------------------------------------------------------------------------------------
 
-// getallproducts
-// Service to fetch all products
+
 const getAllProducts = async (page, pageSize = 10) => {
   console.log("Fetching all products...");
   
   try {
     const products = await prisma.product.findMany({
-      skip: (page - 1) * pageSize,  // Pagination logic
+      skip: (page - 1) * pageSize, 
       take: pageSize,
       include: {
-        category: true,  // Include category information if needed
-        reviews: true,   // Optionally include reviews
+        category: true,  
+        reviews: true,  
       },
     });
 
-    // Get total count for pagination
     const totalProducts = await prisma.product.count();
 
     return {
       data: products,
-      totalPages: Math.ceil(totalProducts / pageSize),  // Calculate total pages based on the total count
+      totalPages: Math.ceil(totalProducts / pageSize),  
     };
   } catch (error) {
     console.error("Error fetching products:", error);

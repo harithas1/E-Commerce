@@ -14,20 +14,17 @@ const registerUser = async ({ name, email, password, role }) => {
   const existingUser = await prisma.user.findUnique({ where: { email } });
   if (existingUser) throw new Error("Email already exists!");
 
-  // Hash password
   const hashedPassword = await bcrypt.hash(password, 10);
 
-  // Create new user
   const newUser = await prisma.user.create({
     data: { name, email, password: hashedPassword, role, emailVerified: false },
   });
 
-  // Generate email verification token
   const emailVerificationToken = jwt.sign({ userId: newUser.id }, JWT_SECRET, {
     expiresIn: "1d",
   });
 
-  // Send verification email
+  // to Send verification email
   const verificationLink = `htpp://localhost:5173/api/auth/verify-email?token=${emailVerificationToken}`;
   const emailContent = `
     <h2>Verify Your Email</h2>
