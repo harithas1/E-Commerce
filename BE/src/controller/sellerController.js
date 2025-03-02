@@ -77,7 +77,7 @@ const delete_product = async (req, res) => {
 
 const list_products = async (req, res) => {
   try {
-    const { sellerId } = req.params;
+    const { sellerId } = req.query;
 
     const products = await listProducts(parseInt(sellerId));
 
