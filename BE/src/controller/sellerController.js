@@ -12,12 +12,12 @@ const add_product = async (req, res) => {
       req.body;
 
     const newProduct = await addProduct({
-      sellerId: parseInt(sellerId),
+      sellerId,
       title,
       description,
-      categoryId: parseInt(categoryId),
-      price: parseFloat(price),
-      stock: parseInt(stock),
+      categoryId,
+      price,
+      stock,
       image,
     });
 
@@ -43,12 +43,12 @@ const update_product = async (req, res) => {
 
     const updatedProduct = await updateProduct({
       productId: parseInt(productId),
-      sellerId: parseInt(sellerId),
+      sellerId,
       title,
       description,
-      categoryId: parseInt(categoryId),
-      price: parseFloat(price),
-      stock: parseInt(stock),
+      categoryId,
+      price,
+      stock,
       image,
     });
 
